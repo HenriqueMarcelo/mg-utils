@@ -1,4 +1,5 @@
 import type { Configuration } from 'webpack';
+import path from 'path';
 
 import { rules } from './webpack.rules';
 import { plugins } from './webpack.plugins';
@@ -16,5 +17,9 @@ export const mainConfig: Configuration = {
   plugins,
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
+    fallback: {
+      path: require.resolve('path-browserify'),
+      child_process: false, // Não incluímos polyfills para child_process
+    },
   },
 };

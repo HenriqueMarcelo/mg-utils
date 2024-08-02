@@ -14,6 +14,8 @@ import { rendererConfig } from './webpack.renderer.config';
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    // https://stackoverflow.com/questions/78221515/db-using-node-adodb-on-an-electron-app-working-fine-in-dev-but-not-on-build
+    extraResource: ["node_modules/node-adodb/lib/adodb.js"], //where adodb.js is located in your app directory
   },
   rebuildConfig: {},
   makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
