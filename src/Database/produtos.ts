@@ -1,8 +1,8 @@
-import connection from "./connection";
+import { connectionGestor } from "./connection";
 
 export async function getAllProdutos () {
     try {
-        const produtos = await connection.query('SELECT * FROM Produtos');
+        const produtos = await connectionGestor.query('SELECT * FROM Produtos');
         return produtos;
     } catch (error) {
         console.error('Database query error:', error);
@@ -12,7 +12,7 @@ export async function getAllProdutos () {
 
 export async function getAllGrupos () {
     try {
-        const grupos = await connection.query('SELECT * FROM Grupo');
+        const grupos = await connectionGestor.query('SELECT * FROM Grupo');
         return grupos;
     } catch (error) {
         console.error('Database query error:', error);
@@ -22,7 +22,7 @@ export async function getAllGrupos () {
 
 export async function insertGrupo(idGrupo: any, descricao: any, posicao: any, familia: any, foto: any, dataAtu: any) {
     try {
-        await connection.execute(`
+        await connectionGestor.execute(`
             INSERT INTO Grupo (idGrupo, Descricao, Posicao, Familia, Foto, DataAtu)
             VALUES ('${idGrupo}', '${descricao}', ${posicao}, ${familia}, '${foto}', '${dataAtu}')
         `);

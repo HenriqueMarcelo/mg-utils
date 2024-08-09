@@ -1,4 +1,5 @@
-// src/global.d.ts
+import { Sql } from "./Database/sql";
+
 interface Versions {
     node: () => string;
     chrome: () => string;
@@ -6,9 +7,13 @@ interface Versions {
     query: () => Promise<string[]>;
     grupos: () => Promise<string[]>;
     insertGrupo: (idGrupo, descricao, posicao, familia, foto, dataAtu) => Promise<string[]>;
+    sqls: () => Promise<Sql[]>;
   }
-  
-  interface Window {
-    versions: Versions;
-  }
+
+declare global {
+    interface Window {
+      versions:Versions;
+    }
+}
+
   

@@ -5,6 +5,6 @@ const ADODB = require('node-adodb');
 if (app.isPackaged) {
     ADODB.PATH = "./resources/adodb.js";
  }
-const connection = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\\MGMobile\\Gestor\\Gestor.mdb;');
+export const connectionGestor = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\\MGMobile\\Gestor\\Gestor.mdb;');
 
-export default connection
+export const conectionVemovel = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\\MGMobile\\Vemovel\\Vemovel.mdb;');
