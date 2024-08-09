@@ -8,6 +8,7 @@ interface Versions {
     grupos: () => Promise<string[]>;
     insertGrupo: (idGrupo, descricao, posicao, familia, foto, dataAtu) => Promise<string[]>;
     sqls: () => Promise<Sql[]>;
+    updateSql: (sql: Sql) => Promise<void>;
   }
 
 declare global {

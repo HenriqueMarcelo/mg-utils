@@ -1,11 +1,11 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { IoPlay } from 'react-icons/io5'
-import { MdModeEditOutline, MdDeleteForever, MdOutlineCancel, MdCancel } from 'react-icons/md'
-import { Sql } from '../Database/sql'
-import { FaRegSave, FaSave } from 'react-icons/fa'
+import { MdModeEditOutline, MdDeleteForever, MdCancel } from 'react-icons/md'
+import { Sql as SqlType } from '../Database/sql'
+import { FaSave } from 'react-icons/fa'
 
 export function Sql() {
-  const [sqls, setSqls] = useState<Sql[]>([])
+  const [sqls, setSqls] = useState<SqlType[]>([])
   const [sqlBeingEdited, setSqlBeingEdited] = useState<string | undefined>()
 
   async function fetchData() {
@@ -18,29 +18,36 @@ export function Sql() {
   }
 
   function handleEdit(nome: string) {
-    console.log(nome)
     setSqlBeingEdited(nome)
   }
 
-  function handleSave(event: FormEvent<HTMLFormElement>, nome: string) {
+  async function handleSave(event: FormEvent<HTMLFormElement>, nome: string) {
     event.preventDefault() // Impede o comportamento padrão de submissão
 
     // Obtém todos os elementos do formulário
     const form = event.currentTarget
     const formData = new FormData(form)
-    console.log(formData)
-
-    // Itera sobre todos os elementos do formulário
-    formData.forEach((value, key) => {
-      console.log(`${key}: ${value}`)
-    })
 
     // Ou para acessar valores específicos
     const NomeSQL = formData.get('NomeSQL')
     const OBS = formData.get('OBS')
     const SQL = formData.get('SQL')
 
-    console.log({ NomeSQL, OBS, SQL })
+    const sqlObj = { NomeSQL: sqlBeingEdited, OBS, SQL } as SqlType
+
+    await updateSql(sqlObj)
+
+    fetchData()
+
+    setSqlBeingEdited(undefined)
+  }
+
+  async function updateSql(sql: SqlType) {
+    try {
+      await window.versions.updateSql(sql)
+    } catch (error) {
+      console.error('Erro querying database:', error)
+    }
   }
 
   useEffect(() => {
@@ -67,12 +74,13 @@ export function Sql() {
               const isEdditing = sqlBeingEdited === sql.NomeSQL
               return (
                 <tr key={sql.NomeSQL} className="hover:bg-gray-100 text-left">
+                  <form
+                    className="hidden"
+                    onSubmit={(e) => handleSave(e, sql.NomeSQL)}
+                    id={sql.NomeSQL}
+                    onReset={() => setSqlBeingEdited(undefined)}
+                  ></form>
                   <td className="px-4 py-2 border-b">
-                    <form
-                      onSubmit={(e) => handleSave(e, sql.NomeSQL)}
-                      id={sql.NomeSQL}
-                      onReset={() => setSqlBeingEdited(undefined)}
-                    ></form>
                     <input
                       name="NomeSQL"
                       defaultValue={sql.NomeSQL}
@@ -102,6 +110,8 @@ export function Sql() {
                   <td className="px-4 py-2 border-b whitespace-nowrap text-center">
                     {isEdditing ? (
                       <>
+                        <button className="hidden" />
+                        <button className="hidden" />
                         <button
                           type="submit"
                           className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm p-2 text-center me-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
@@ -123,8 +133,7 @@ export function Sql() {
                         <button
                           type="button"
                           className="text-white bg-yellow-700 hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-sm p-2 text-center me-2 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                          onClick={() => handleEdit(sql.NomeSQL)}
-                          form={sql.NomeSQL}
+                          onClick={() => setSqlBeingEdited(sql.NomeSQL)}
                         >
                           <MdModeEditOutline />
                         </button>
